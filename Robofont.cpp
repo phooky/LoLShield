@@ -1,7 +1,11 @@
 
 #include "Robofont.h"
- 
-char_entry font_table[128] PROGMEM = {
+#include "Font.h"
+
+#define ROBOFONT_HEIGHT 9
+#define ROBOFONT_DATA_SIZE 188
+
+Font::char_entry robofont_table[128] PROGMEM = {
   {0,0},
   {0,0},
   {0,0},
@@ -133,7 +137,7 @@ char_entry font_table[128] PROGMEM = {
 
 };
  
-prog_uint8_t font_data[FONT_DATA_SIZE] PROGMEM = {
+prog_uint8_t robofont_data[ROBOFONT_DATA_SIZE] PROGMEM = {
 0x40,
 0x7e,
 0x42,
@@ -324,14 +328,10 @@ prog_uint8_t font_data[FONT_DATA_SIZE] PROGMEM = {
 0x46,
 
 };
- 
-uint8_t get_char_len(uint8_t c) {
-  return pgm_read_byte(&(font_table[c].len));
-}
- 
-uint8_t get_char_bit(uint8_t c, uint8_t row, uint8_t column) {
-  uint8_t offset = pgm_read_byte(&(font_table[c].offset));
-  uint8_t col = pgm_read_byte(&(font_data[offset+column]));
-  return ((col & _BV(row)) == 0)?0:1;
-}
- 
+
+Font::font_defn robofont = {
+  ROBOFONT_HEIGHT,
+  ROBOFONT_DATA_SIZE,
+  robofont_table,
+  robofont_data
+};

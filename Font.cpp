@@ -28,16 +28,35 @@
 #include "Charliplexing.h"
 #include <inttypes.h>
 
-#include "Robofont.h"
+extern Font::font_defn robofont;
+
+#define LOL_HEIGHT 9
+#define LOL_WIDTH 14
+
+uint8_t get_char_len(uint8_t c) {
+  return pgm_read_byte(&(robofont.table[c].len));
+}
+ 
+uint8_t get_char_bit(uint8_t c, uint8_t row, uint8_t column) {
+  uint8_t offset = pgm_read_byte(&(robofont.table[c].offset));
+  uint8_t col = pgm_read_byte(&(robofont.data[offset+column]));
+  return ((col & _BV(row)) == 0)?0:1;
+}
+ 
 
 uint8_t drawInternal(unsigned char letter,int x,int y,int set,uint8_t rotate=0) {
   uint16_t len = get_char_len(letter);
 
-  for (uint16_t row = 0; row < 9; row++) {
+  for (uint16_t row = 0; row < LOL_HEIGHT; row++) {
     for (uint16_t col = 0; col < len; col++) {
-      int xp = x + col;
-      int yp = y + row;
-      if (get_char_bit(letter, row, col) && (xp >=0) && (xp < 14)) {
+      uint8_t bit = get_char_bit(letter, row, col);
+      int xp, yp;
+      if (rotate == 0) {
+        xp = x+col; yp = y+row;
+      } else if (rotate == 1) {
+        yp = x+col; xp = y+row;
+      }
+      if (bit && xp >=0 && xp < LOL_WIDTH && yp >=0 && yp < LOL_HEIGHT) {
         if (!rotate) {
           LedSign::Set(xp, yp, set);
         } else {

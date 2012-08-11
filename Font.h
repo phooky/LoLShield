@@ -26,9 +26,22 @@
 #define Font_h
 
 #include <inttypes.h>
+#include <avr/pgmspace.h>
 
 namespace Font
 {
+
+typedef struct {
+  uint8_t offset;
+  uint8_t len;
+} PROGMEM char_entry;
+
+typedef struct {
+  uint8_t height;
+  uint16_t len;
+  char_entry* table;
+  prog_uint8_t* data;
+} font_defn;
 
 extern uint8_t Draw(unsigned char letter,int x,int y,int set=1);
 
