@@ -25,7 +25,7 @@
 #include "Charliplexing.h"
 #include "Figure.h"
 
-#include "WProgram.h"
+#include "Arduino.h"
 #include <inttypes.h>
 
 
