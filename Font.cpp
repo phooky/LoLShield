@@ -29,17 +29,21 @@
 #include <inttypes.h>
 
 extern Font::font_defn robofont;
+extern Font::font_defn verdfont;
+extern Font::font_defn msfont;
 
 #define LOL_HEIGHT 9
 #define LOL_WIDTH 14
 
+Font::font_defn* currentFont = &robofont;
+
 uint8_t get_char_len(uint8_t c) {
-  return pgm_read_byte(&(robofont.table[c].len));
+  return pgm_read_byte(&(currentFont->table[c].len));
 }
  
 uint8_t get_char_bit(uint8_t c, uint8_t row, uint8_t column) {
-  uint8_t offset = pgm_read_byte(&(robofont.table[c].offset));
-  uint8_t col = pgm_read_byte(&(robofont.data[offset+column]));
+  uint8_t offset = pgm_read_byte(&(currentFont->table[c].offset));
+  uint8_t col = pgm_read_byte(&(currentFont->data[offset+column]));
   return ((col & _BV(row)) == 0)?0:1;
 }
  
@@ -68,6 +72,14 @@ uint8_t drawInternal(unsigned char letter,int x,int y,int set,uint8_t rotate=0) 
   return len+1;
 }
 
+void Font::SetFont(CharFont f) {
+  switch(f) {
+    case ROBO_FONT: currentFont = &robofont; break;
+    case MS_FONT: currentFont = &msfont; break;
+    case VERDANA_FONT: currentFont = &verdfont; break;
+    default: currentFont = &robofont;
+  }
+}
 
 /* -----------------------------------------------------------------  */
 /** Draws a figure (0-9). You should call it with set=1, 

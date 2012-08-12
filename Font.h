@@ -43,6 +43,14 @@ typedef struct {
   prog_uint8_t* data;
 } font_defn;
 
+typedef enum {
+  ROBO_FONT = 0,
+  VERDANA_FONT,
+  MS_FONT
+} CharFont;
+
+extern void SetFont(CharFont f);
+
 extern uint8_t Draw(unsigned char letter,int x,int y,int set=1);
 
 extern uint8_t Draw90(unsigned char letter,int x,int y,int set=1);
